@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>验证码使用场景</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.verCode-input{
+			width: 100px;
+			height: 30px;
+
+		}
+		.verCode-img{
+			width: 100px;
+			height: 30px;
+		}
+		.submit{
+			display: block;
+			margin-top: 10px;
+			width: 100px;
+			height: 30px;
+		}
+	</style>
+	<script type="text/javascript" src="./jquery-3.1.1.min.js"></script>
+</head>
+<body>
+	<div class="verCode">
+		<input type="text" class="verCode-input">
+		<img src="http://localhost:2234/verCode" alt="" class="verCode-img">
+		<button class="submit">提交</button>
+	</div>
+	<script type="text/javascript">
+		var verCodeInput = document.getElementsByClassName("verCode-input")[0];
+		var verCodeImg = document.getElementsByClassName("verCode-img")[0];
+		var submit = document.getElementsByClassName("submit")[0];
+		var change = 0;
+		
+		//点击验证码图片换一张
+		//添加时间戳，保证每次请求不使用缓存（服务器会缓存ajax请求的信息）
+		verCodeImg.addEventListener("click", function(){
+			change++;
+			var url = "http://localhost:2234/verCode?time="+ change;
+			verCodeImg.setAttribute("src", url);
+		}, false);
+
+		//点击提交模拟登陆场景
+		submit.addEventListener("click", function(){
+			var jsonData = {
+				verCode: verCodeInput.value
+			};
+
+			$.ajax({
+				url: "http://localhost:2234/login",
+				type: "GET",
+				data: jsonData,
+				dataType: "jsonp",
+				success: function(data){
+					console.log(data);
+				}
+			});
+		}, false);
+	</script>
+</body>
+</html>
